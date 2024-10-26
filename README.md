@@ -1,5 +1,3 @@
-Here's a properly formatted version of your README:
-
 # README
 
 ## How to Start
