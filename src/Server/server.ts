@@ -4,6 +4,8 @@ import { router } from './routes';
 import userAuthRoutes from './Api/UserAuthentication';
 import uploadPackageRoutes from './Api/uploadPackage'; // Upload package routes
 import deletePackageRoutes from './Api/deletePackage';
+import updatePackageRoutes from './Api/updatePackage';
+import downloadPackageRoutes from './Api/downloadPackage';
 
 const app = express();
 const port = 3000;
@@ -22,6 +24,10 @@ app.use('/api', router);
 app.use('/api', uploadPackageRoutes);  // Upload package routes
 
 app.use('/api', deletePackageRoutes);  // Delete package routes
+
+app.use('/api', updatePackageRoutes);  // Update package routes
+
+app.use('/api', downloadPackageRoutes);// download package routes
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
