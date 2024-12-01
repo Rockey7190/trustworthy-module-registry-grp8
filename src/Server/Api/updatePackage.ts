@@ -119,6 +119,13 @@ router.put('/update', upload.array('files'), async (req: Request, res: Response)
             await debloatDirectory(tempDir);
         }
 
+        // Extract README.md content
+        const readmePath = path.join(tempDir, 'README.md');
+        let readmeContent = null;
+        if (fs.existsSync(readmePath)) {
+            readmeContent = fs.readFileSync(readmePath, 'utf-8');
+        }
+
         const zipFilePath = await archiveToZip(tempDir);
         const zipFileBuffer = fs.readFileSync(zipFilePath);
 
@@ -139,8 +146,8 @@ router.put('/update', upload.array('files'), async (req: Request, res: Response)
 
         // Insert the new version into package_versions
         await pool.query(
-            'INSERT INTO package_versions (package_id, version, s3_url, uploaded_by) VALUES ($1, $2, $3, $4)',
-            [packageId, version, s3Url, userId]
+            'INSERT INTO package_versions (package_id, version, s3_url, uploaded_by, readme_content) VALUES ($1, $2, $3, $4, $5)',
+            [packageId, version, s3Url, userId, readmeContent]
         );
 
         // Cleanup

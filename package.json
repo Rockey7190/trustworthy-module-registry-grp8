@@ -29,7 +29,8 @@
     "semver": "^7.6.3",
     "tar": "^7.4.3",
     "terser": "^5.36.0",
-    "ts-json-schema-generator": "^2.3.0"
+    "ts-json-schema-generator": "^2.3.0",
+    "unzipper": "^0.12.3"
   },
   "devDependencies": {
     "@types/archiver": "^6.0.3",

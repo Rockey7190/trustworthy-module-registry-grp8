@@ -107,6 +107,13 @@ router.post('/upload', upload.array('files'), async (req: Request, res: Response
             await debloatDirectory(tempDir);
         }
 
+        // Extract README.md content
+        const readmePath = path.join(tempDir, 'README.md');
+        let readmeContent = null;
+        if (fs.existsSync(readmePath)) {
+            readmeContent = fs.readFileSync(readmePath, 'utf-8');
+        }
+
         const zipFilePath = await archiveToZip(tempDir);
         const zipFileBuffer = fs.readFileSync(zipFilePath);
 
@@ -135,10 +142,10 @@ router.post('/upload', upload.array('files'), async (req: Request, res: Response
             await pool.query('SELECT package_id FROM packages WHERE package_name = $1', [packageName])
         ).rows[0].package_id;
 
-        // Insert package version
+        // Insert package version and README content
         await pool.query(
-            'INSERT INTO package_versions (package_id, version, s3_url, uploaded_by) VALUES ($1, $2, $3, $4)',
-            [packageId, '1.0.0', s3Url, userId]
+            'INSERT INTO package_versions (package_id, version, s3_url, uploaded_by, readme_content) VALUES ($1, $2, $3, $4, $5)',
+            [packageId, '1.0.0', s3Url, userId, readmeContent]
         );
 
         // Cleanup

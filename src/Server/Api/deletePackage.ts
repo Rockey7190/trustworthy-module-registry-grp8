@@ -20,23 +20,24 @@ router.delete('/delete', async (req: Request, res: Response) => {
     }
 
     try {
-        // Check if the package exists in the database
+        // Fetch package version and S3 URL
         const query = `
-            SELECT s3_url FROM packages
-            WHERE package_name = $1 AND version = $2;
+            SELECT v.s3_url, v.package_id 
+            FROM package_versions v
+            INNER JOIN packages p ON v.package_id = p.package_id
+            WHERE p.package_name = $1 AND v.version = $2;
         `;
         const result = await pool.query(query, [packageName, version]);
 
         if (result.rows.length === 0) {
-            return res.status(404).send({ message: 'Package not found.' });
+            return res.status(404).send({ message: 'Package version not found.' });
         }
 
-        const s3Url = result.rows[0].s3_url;
+        const { s3_url: s3Url, package_id: packageId } = result.rows[0];
 
         // Extract bucket and key from the S3 URL
         const bucketName = process.env.AWS_BUCKET_NAME!;
-	const key = s3Url.substring(s3Url.lastIndexOf('/') + 1); // Extract the file key
-
+        const key = s3Url.replace(`https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/`, '');
 
         // Delete the file from S3
         console.log('Deleting from S3...');
@@ -47,16 +48,15 @@ router.delete('/delete', async (req: Request, res: Response) => {
         await s3Client.send(deleteCommand);
         console.log('S3 deletion successful!');
 
-        // Delete the package metadata from the database
-        console.log('Deleting from database...');
-        const deleteQuery = `
-            DELETE FROM packages
-            WHERE package_name = $1 AND version = $2;
-        `;
-        await pool.query(deleteQuery, [packageName, version]);
-        console.log('Database deletion successful!');
+        // Delete the package version metadata from the database
+        console.log('Deleting package version from database...');
+        await pool.query('DELETE FROM package_versions WHERE package_id = $1 AND version = $2;', [
+            packageId,
+            version,
+        ]);
+        console.log('Package version deletion successful!');
 
-        res.status(200).send({ message: 'Package deleted successfully.' });
+        res.status(200).send({ message: 'Package version deleted successfully.' });
     } catch (error: any) {
         console.error('Error in deletePackage:', error.message || error);
         res.status(500).send({ message: 'Failed to delete package.', error: error.message || 'Unknown error' });
@@ -64,4 +64,3 @@ router.delete('/delete', async (req: Request, res: Response) => {
 });
 
 export default router;
-

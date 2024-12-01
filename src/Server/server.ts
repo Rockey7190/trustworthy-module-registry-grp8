@@ -7,6 +7,8 @@ import deletePackageRoutes from './Api/deletePackage';
 import updatePackageRoutes from './Api/updatePackage';
 import downloadPackageRoutes from './Api/downloadPackage';
 import fetchVersions from './Api/fetchVersions';
+import fetchDirectory from './Api/fetchDirectory';
+import searchPackages from './Api/searchPackages';
 
 const app = express();
 const port = 3000;
@@ -31,6 +33,10 @@ app.use('/api', updatePackageRoutes);  // Update package routes
 app.use('/api', downloadPackageRoutes);// download package routes
 
 app.use('/api', fetchVersions); // Fetch package versions
+
+app.use('/api', fetchDirectory); // Fetch directories
+
+app.use('/api', searchPackages); // Search packages
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
