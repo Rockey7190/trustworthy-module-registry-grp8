@@ -3,6 +3,7 @@ import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { pool } from '../../Config/dbConnection';
 import { pipeline } from 'stream';
 import { promisify } from 'util';
+import path from 'path';
 
 const router = Router();
 
@@ -24,24 +25,25 @@ router.get('/download', async (req: Request, res: Response) => {
     }
 
     try {
-        // Query the database for the package
+        // Query the database for the package and version
         const query = `
-            SELECT s3_url FROM packages
-            WHERE package_name = $1 ${version ? 'AND version = $2' : ''}
-            ORDER BY created_at DESC
+            SELECT v.s3_url 
+            FROM package_versions v
+            INNER JOIN packages p ON v.package_id = p.package_id
+            WHERE p.package_name = $1 ${version ? 'AND v.version = $2' : ''}
+            ORDER BY v.created_at DESC
             LIMIT 1;
         `;
         const values = version ? [packageName, version] : [packageName];
         const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
-            return res.status(404).send({ message: 'Package not found.' });
+            return res.status(404).send({ message: 'Package or version not found.' });
         }
 
         const s3Url = result.rows[0].s3_url;
         const bucketName = process.env.AWS_BUCKET_NAME!;
-	const key = s3Url.substring(s3Url.lastIndexOf('/') + 1); // Extract everything after the last '/'
-
+        const key = s3Url.replace(`https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/`, '');
 
         // Get the file from S3
         const command = new GetObjectCommand({
@@ -53,7 +55,8 @@ router.get('/download', async (req: Request, res: Response) => {
 
         // Set headers for file download
         res.setHeader('Content-Type', s3Response.ContentType || 'application/octet-stream');
-        res.setHeader('Content-Disposition', `attachment; filename="${key}"`);
+        res.setHeader('Content-Disposition', `attachment; filename="${path.basename(key)}"`);
+
 
         // Stream the file to the response
         await pipelineAsync(s3Response.Body as NodeJS.ReadableStream, res);
@@ -64,4 +67,3 @@ router.get('/download', async (req: Request, res: Response) => {
 });
 
 export default router;
-
