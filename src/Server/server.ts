@@ -2,10 +2,11 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { router } from './routes';
 import userAuthRoutes from './Api/UserAuthentication';
-import uploadPackageRoutes from './Api/uploadPackage'; // Upload package routes
+import uploadPackageRoutes from './Api/uploadPackage';
 import deletePackageRoutes from './Api/deletePackage';
 import updatePackageRoutes from './Api/updatePackage';
 import downloadPackageRoutes from './Api/downloadPackage';
+import fetchVersions from './Api/fetchVersions';
 
 const app = express();
 const port = 3000;
@@ -28,6 +29,8 @@ app.use('/api', deletePackageRoutes);  // Delete package routes
 app.use('/api', updatePackageRoutes);  // Update package routes
 
 app.use('/api', downloadPackageRoutes);// download package routes
+
+app.use('/api', fetchVersions); // Fetch package versions
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
