@@ -9,6 +9,8 @@ import downloadPackageRoutes from './Api/downloadPackage';
 import fetchVersions from './Api/fetchVersions';
 import fetchDirectory from './Api/fetchDirectory';
 import searchPackages from './Api/searchPackages';
+import sizeCost from './Api/sizeCost';
+import fullReset from './Api/fullReset';
 
 const app = express();
 const port = 3000;
@@ -37,6 +39,10 @@ app.use('/api', fetchVersions); // Fetch package versions
 app.use('/api', fetchDirectory); // Fetch directories
 
 app.use('/api', searchPackages); // Search packages
+
+app.use('/api', sizeCost); // Check size cost
+
+app.use('/api', fullReset);
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
