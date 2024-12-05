@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-import { pool } from '../../Config/dbConnection';
+import { pool } from '../Config/dbConnection';
 import { pipeline } from 'stream';
 import { promisify } from 'util';
 import path from 'path';

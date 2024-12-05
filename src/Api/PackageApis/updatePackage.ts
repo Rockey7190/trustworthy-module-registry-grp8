@@ -6,7 +6,7 @@ import archiver from 'archiver';
 import tar from 'tar';
 import { minify } from 'terser';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { pool } from '../../Config/dbConnection';
+import { pool } from '../Config/dbConnection';
 
 const upload = multer({ dest: 'uploads/' });
 const router = Router();
@@ -70,16 +70,28 @@ async function debloatDirectory(sourceDir: string): Promise<void> {
     }
 }
 
-router.post('/upload', upload.array('files'), async (req: Request, res: Response) => {
+router.put('/update', upload.array('files'), async (req: Request, res: Response) => {
     try {
-        const { packageName } = req.body;
+        const { packageName, version } = req.body;
         const files = req.files as Express.Multer.File[];
         const debloat = req.query.debloat === 'true';
         const userId = 4; // Simulate user ID
 
-        if (!packageName || !files || files.length === 0) {
-            return res.status(400).send({ message: 'Missing package name or files' });
+        if (!packageName || !version || !files || files.length === 0) {
+            return res.status(400).send({ message: 'Package name, version, and files are required.' });
         }
+
+        // Check if the package exists
+        const packageResult = await pool.query(
+            'SELECT package_id FROM packages WHERE package_name = $1',
+            [packageName]
+        );
+
+        if (packageResult.rows.length === 0) {
+            return res.status(404).send({ message: 'Package not found.' });
+        }
+
+        const packageId = packageResult.rows[0].package_id;
 
         const tempDir = path.join(__dirname, '../../temp', packageName);
         fs.mkdirSync(tempDir, { recursive: true });
@@ -117,9 +129,9 @@ router.post('/upload', upload.array('files'), async (req: Request, res: Response
         const zipFilePath = await archiveToZip(tempDir);
         const zipFileBuffer = fs.readFileSync(zipFilePath);
 
-        // Upload the file to S3
+        // Upload the updated version to S3
         const bucketName = process.env.AWS_BUCKET_NAME!;
-        const s3Key = `${packageName}/1.0.0.zip`;
+        const s3Key = `${packageName}/${version}.zip`;
 
         const uploadCommand = new PutObjectCommand({
             Bucket: bucketName,
@@ -132,20 +144,10 @@ router.post('/upload', upload.array('files'), async (req: Request, res: Response
 
         const s3Url = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Key}`;
 
-        // Insert package metadata
-        const packageResult = await pool.query(
-            'INSERT INTO packages (package_name, uploaded_by) VALUES ($1, $2) ON CONFLICT (package_name) DO NOTHING RETURNING package_id',
-            [packageName, userId]
-        );
-
-        const packageId = packageResult.rows[0]?.package_id || (
-            await pool.query('SELECT package_id FROM packages WHERE package_name = $1', [packageName])
-        ).rows[0].package_id;
-
-        // Insert package version and README content
+        // Insert the new version into package_versions
         await pool.query(
             'INSERT INTO package_versions (package_id, version, s3_url, uploaded_by, readme_content) VALUES ($1, $2, $3, $4, $5)',
-            [packageId, '1.0.0', s3Url, userId, readmeContent]
+            [packageId, version, s3Url, userId, readmeContent]
         );
 
         // Cleanup
@@ -155,12 +157,13 @@ router.post('/upload', upload.array('files'), async (req: Request, res: Response
         });
 
         res.status(200).send({
-            message: 'Package uploaded successfully',
+            message: 'Package updated successfully',
             packageId,
+            version,
         });
     } catch (e: any) {
-        console.error('Error in /upload:', e.message || e);
-        res.status(500).send({ message: 'Failed to upload package', error: e.message || 'Unknown error' });
+        console.error('Error in /update:', e.message || e);
+        res.status(500).send({ message: 'Failed to update package', error: e.message || 'Unknown error' });
     }
 });
 
