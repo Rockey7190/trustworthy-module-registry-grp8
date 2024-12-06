@@ -1,14 +1,14 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { router } from './routes';
-import userAuthRoutes from '../Api/UserRelatedApi/UserAuthentication';
-import uploadPackageRoutes from '../Api/PackageApis/uploadPackage';
-import deletePackageRoutes from '../Api/PackageApis/deletePackage';
-import updatePackageRoutes from '../Api/PackageApis/updatePackage';
-import downloadPackageRoutes from '../Api/PackageApis/downloadPackage';
-import fetchVersions from '../Api/PackageApis/fetchVersions';
-import fetchDirectory from '../Api/PackageApis/fetchDirectory';
-import searchPackages from '../Api/PackageApis/searchPackages';
+import userAuthRoutes from './Api/UserAuthentication';
+import uploadPackageRoutes from './Api/uploadPackage';
+import deletePackageRoutes from './Api/deletePackage';
+import updatePackageRoutes from './Api/updatePackage';
+import downloadPackageRoutes from './Api/downloadPackage';
+import fetchVersions from './Api/fetchVersions';
+import fetchDirectory from './Api/fetchDirectory';
+import searchPackages from './Api/searchPackages';
 
 const app = express();
 const port = 3000;
@@ -37,6 +37,10 @@ app.use('/api', fetchVersions); // Fetch package versions
 app.use('/api', fetchDirectory); // Fetch directories
 
 app.use('/api', searchPackages); // Search packages
+
+app.use('/api', sizeCost); // Check size cost
+
+app.use('/api', fullReset);
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
