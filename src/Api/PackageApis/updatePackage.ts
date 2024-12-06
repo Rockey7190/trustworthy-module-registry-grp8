@@ -6,7 +6,7 @@ import archiver from 'archiver';
 import tar from 'tar';
 import { minify } from 'terser';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { pool } from '../Config/dbConnection';
+import { pool } from '../../Config/dbConnection';
 
 const upload = multer({ dest: 'uploads/' });
 const router = Router();
