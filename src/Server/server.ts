@@ -1,14 +1,16 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { router } from './routes';
-import userAuthRoutes from './Api/UserAuthentication';
-import uploadPackageRoutes from './Api/uploadPackage';
-import deletePackageRoutes from './Api/deletePackage';
-import updatePackageRoutes from './Api/updatePackage';
-import downloadPackageRoutes from './Api/downloadPackage';
-import fetchVersions from './Api/fetchVersions';
-import fetchDirectory from './Api/fetchDirectory';
-import searchPackages from './Api/searchPackages';
+import userAuthRoutes from '../Api/UserRelatedApi/UserAuthentication'
+import uploadPackageRoutes from '../Api/PackageApis/uploadPackage';
+import deletePackageRoutes from '../Api/PackageApis/deletePackage';
+import updatePackageRoutes from '../Api/PackageApis/updatePackage';
+import downloadPackageRoutes from '../Api/PackageApis/downloadPackage';
+import fetchVersions from '../Api/PackageApis/fetchVersions';
+import fetchDirectory from '../Api/PackageApis/fetchDirectory';
+import searchPackages from '../Api/PackageApis/searchPackages';
+import sizeCost from '../Api/PackageApis/sizeCost';
+import fullReset from '../Api/PackageApis/fullReset';
 
 const app = express();
 const port = 3000;
