@@ -1,6 +1,11 @@
 import axios from 'axios';
+import { Metric } from './Metric'; // Adjust the import based on your project structure
 
-import { Metric } from './Metric'; // Assuming Metric is in a separate file named Metric.ts
+interface PullRequest {
+    commits_url: string;
+    merged_at: string | null;
+    requested_reviewers: unknown[];
+}
 
 export class CodeReviewMetric extends Metric {
     public weight: number;
@@ -11,63 +16,43 @@ export class CodeReviewMetric extends Metric {
     }
 
     async calculateScoreGithub(): Promise<void> {
-        const { totalCommits, reviewedCommits } = await this.fetchCommitData();
-        if (totalCommits === 0) {
-            this.score = 1.0; // No commits mean a perfect score.
-            return;
-        }
-
-        this.score = reviewedCommits / totalCommits;
-    }
-
-    async calculateScoreNPM(): Promise<void> {
-        throw new Error("This metric is not applicable to npm packages.");
-    }
-
-    private async fetchCommitData(): Promise<{ totalCommits: number; reviewedCommits: number }> {
-        if (!this.url.includes("github.com")) {
-            throw new Error("Unsupported URL format. This metric only supports GitHub repositories.");
-        }
+        const repoPath = this.url.replace("https://github.com/", "");
+        const headers = { Authorization: `Bearer ${this.token}` };
+        const apiUrl = `https://api.github.com/repos/${repoPath}/pulls?state=all&per_page=100`;
 
         try {
-            const repoPath = this.url.replace("https://github.com/", "");
-            const apiUrl = `https://api.github.com/repos/${repoPath}/pulls?state=closed&per_page=100`;
-            const headers = { Authorization: `Bearer ${this.token}` };
+            const response = await axios.get(apiUrl, { headers });
+            const pullRequests: PullRequest[] = response.data;
 
-            let page = 1;
             let totalCommits = 0;
             let reviewedCommits = 0;
 
-            while (true) {
-                const response = await axios.get(`${apiUrl}&page=${page}`, { headers });
-                const pullRequests = response.data;
+            for (const pr of pullRequests) {
+                // Fetch commit details for the pull request
+                const commitsResponse = await axios.get(pr.commits_url, { headers });
+                const commits = commitsResponse.data;
 
-                if (pullRequests.length === 0) {
-                    break;
+                totalCommits += commits.length;
+
+                // Count only commits from PRs with reviews
+                if (pr.merged_at && pr.requested_reviewers.length > 0) {
+                    reviewedCommits += commits.length;
                 }
-
-                for (const pr of pullRequests) {
-                    if (pr.merged_at && pr.requested_reviewers.length > 0) {
-                        const commitsUrl = pr.commits_url;
-                        const commitsResponse = await axios.get(commitsUrl, { headers });
-                        const commits = commitsResponse.data;
-                        reviewedCommits += commits.length;
-                    }
-                }
-
-                totalCommits += pullRequests.reduce((sum, pr) => sum + pr.commits, 0);
-                page++;
             }
 
-            return { totalCommits, reviewedCommits };
+            this.score = totalCommits > 0 ? reviewedCommits / totalCommits : 1.0;
         } catch (error) {
-            console.error("Error fetching commit data from GitHub:", error.message);
-            return { totalCommits: 0, reviewedCommits: 0 };
+            console.error("Error fetching commit data from GitHub:", (error as Error).message);
+            this.score = 0.0;
         }
     }
 
+    async calculateScoreNPM(): Promise<void> {
+        throw new Error("NPM review metrics are not supported.");
+    }
+
     getScore(): number {
-        console.log(`Score for URL ${this.url}: ${this.score}`);
+        console.log(`Code Review Metric score for ${this.url}: ${this.score}`);
         return this.score;
     }
 }
