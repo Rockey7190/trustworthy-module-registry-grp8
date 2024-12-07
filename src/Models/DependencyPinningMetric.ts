@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Metric } from './Metric'; // Adjust the import based on your project structure
+import { Metric } from './Metric';
 
 export class DependencyPinningMetric extends Metric {
     public weight: number;
