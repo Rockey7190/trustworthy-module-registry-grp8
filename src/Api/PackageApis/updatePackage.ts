@@ -75,7 +75,7 @@ router.put('/update', upload.array('files'), async (req: Request, res: Response)
         const { packageName, version } = req.body;
         const files = req.files as Express.Multer.File[];
         const debloat = req.query.debloat === 'true';
-        const userId = 4; // Simulate user ID
+        const userId = 5; // Simulate user ID
 
         if (!packageName || !version || !files || files.length === 0) {
             return res.status(400).send({ message: 'Package name, version, and files are required.' });
