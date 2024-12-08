@@ -4,6 +4,9 @@ import { Correctness } from "./Correctness";
 import { ResponsiveMaintainer } from "./ResponsiveMaintainer";
 import { RampUp } from "./RampUp";
 import { License } from "./License";
+import { DependencyPinningMetric } from "./DependencyPinningMetric";
+import { CodeReviewMetric } from "./CodeReviewMetric"
+
 import * as fs from 'fs';
 
 export class AllMetrics {
@@ -19,6 +22,8 @@ export class AllMetrics {
         this.metrics.push(new ResponsiveMaintainer(url));
         this.metrics.push(new RampUp(url));
         this.metrics.push(new License(url));
+        this.metrics.push(new DependencyPinningMetric(url));
+        this.metrics.push(new CodeReviewMetric(url))
         this.url = url;
         
     }

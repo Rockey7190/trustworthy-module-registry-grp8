@@ -5,7 +5,7 @@ import semver from 'semver';
 
 const router = Router();
 
-router.get('/versions', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
     const { packageName, version } = req.query;
 
     if (!packageName) {
