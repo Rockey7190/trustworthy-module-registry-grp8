@@ -59,7 +59,8 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 //     console.log(`Server running at http://localhost:${port}`);
 // });
 
-app.listen(port, 'localhost', () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${port}`);
 });
+
 
