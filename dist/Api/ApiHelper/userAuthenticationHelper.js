@@ -16,7 +16,7 @@ exports.validateUsername = validateUsername;
 exports.isValidInput = isValidInput;
 exports.checkForDuplicate = checkForDuplicate;
 const dbUtil_1 = require("../../Util/dbUtil");
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const validator = require("validator");
 function hashPassword(plainPassword) {
     return __awaiter(this, void 0, void 0, function* () {
