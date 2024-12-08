@@ -13,7 +13,7 @@ import sizeCost from '../Api/PackageApis/sizeCost';
 import fullReset from '../Api/PackageApis/fullReset';
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = Number(process.env.PORT) || 8080;
 
 // Middleware for parsing JSON and form data
 app.use(bodyParser.json());
@@ -55,8 +55,11 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 });
 
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//     console.log(`Server running at http://localhost:${port}`);
+// });
 
+app.listen(port, 'localhost', () => {
+    console.log(`Server running on http://localhost:${port}`);
+});
 
