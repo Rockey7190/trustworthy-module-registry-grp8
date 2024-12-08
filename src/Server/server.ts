@@ -1,6 +1,5 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { router } from './routes';
 import userAuthRoutes from '../Api/UserRelatedApi/UserAuthentication'
 import uploadPackageRoutes from '../Api/PackageApis/uploadPackage';
 import deletePackageRoutes from '../Api/PackageApis/deletePackage';
@@ -9,8 +8,15 @@ import downloadPackageRoutes from '../Api/PackageApis/downloadPackage';
 import fetchVersions from '../Api/PackageApis/fetchVersions';
 import fetchDirectory from '../Api/PackageApis/fetchDirectory';
 import searchPackages from '../Api/PackageApis/searchPackages';
-import sizeCost from '../Api/PackageApis/sizeCost';
+import packageCost from '../Api/PackageApis/packageCost';
 import fullReset from '../Api/PackageApis/fullReset';
+import fetchPackagesRoutes from '../Api/PackageApis/fetchPackages';
+import getAndAddPackageID from '../Api/PackageApis/getAndAddPackageID';
+import packageEndpoint from '../Api/PackageApis/packageEndpoint';
+import byRegEx from '../Api/PackageApis/byRegEx'
+import packageRate from '../Api/PackageApis/packageRate'
+import tracks from '../Api/PackageApis/tracks'
+
 
 const app = express();
 const port = 3000;
@@ -22,27 +28,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Include user authentication routes
 app.use('/api', userAuthRoutes);
 
-// Include main router (if necessary)
-app.use('/api', router);
+app.use('/upload', uploadPackageRoutes);  // Upload package routes
+app.use('/delete', deletePackageRoutes);  // Delete package routes
+app.use('/update', updatePackageRoutes);  // Update package routes
+app.use('/download', downloadPackageRoutes);// download package routes
+app.use('/versions', fetchVersions); // Fetch package versions
+app.use('/directory', fetchDirectory); // Fetch directories
+app.use('/search', searchPackages); // Search packages
 
-// Register the upload routes
-app.use('/api', uploadPackageRoutes);  // Upload package routes
-
-app.use('/api', deletePackageRoutes);  // Delete package routes
-
-app.use('/api', updatePackageRoutes);  // Update package routes
-
-app.use('/api', downloadPackageRoutes);// download package routes
-
-app.use('/api', fetchVersions); // Fetch package versions
-
-app.use('/api', fetchDirectory); // Fetch directories
-
-app.use('/api', searchPackages); // Search packages
-
-app.use('/api', sizeCost); // Check size cost
-
-app.use('/api', fullReset);
+app.use('/package', packageCost);
+app.use('/reset', fullReset);
+app.use('/packages', fetchPackagesRoutes);
+app.use('/package', getAndAddPackageID);
+app.use('/package', packageEndpoint);
+app.use('/package/byRegEx', byRegEx)
+app.use('/package', packageRate)
+app.use('/tracks', tracks)
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

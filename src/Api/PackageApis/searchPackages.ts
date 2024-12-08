@@ -3,7 +3,7 @@ import { pool } from '../../Config/dbConnection';
 
 const router = Router();
 
-router.get('/search', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
     const { query, page, limit } = req.query;
 
     if (!query) {

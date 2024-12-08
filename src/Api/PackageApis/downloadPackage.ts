@@ -17,7 +17,7 @@ const s3Client = new S3Client({
 
 const pipelineAsync = promisify(pipeline);
 
-router.get('/download', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
     const { packageName, version } = req.query;
 
     if (!packageName) {

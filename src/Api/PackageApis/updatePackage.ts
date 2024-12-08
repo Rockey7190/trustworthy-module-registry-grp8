@@ -70,7 +70,7 @@ async function debloatDirectory(sourceDir: string): Promise<void> {
     }
 }
 
-router.put('/update', upload.array('files'), async (req: Request, res: Response) => {
+router.put('/', upload.array('files'), async (req: Request, res: Response) => {
     try {
         const { packageName, version } = req.body;
         const files = req.files as Express.Multer.File[];

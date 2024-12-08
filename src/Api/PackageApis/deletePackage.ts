@@ -12,7 +12,7 @@ const s3Client = new S3Client({
     },
 });
 
-router.delete('/delete', async (req: Request, res: Response) => {
+router.delete('/', async (req: Request, res: Response) => {
     const { packageName, version } = req.body;
 
     if (!packageName || !version) {

@@ -12,7 +12,7 @@ const s3Client = new S3Client({
     },
 });
 
-router.post('/reset', async (_req: Request, res: Response) => {
+router.delete('/', async (_req: Request, res: Response) => {
     try {
         // Step 1: Clear database tables
         console.log('Resetting database...');
