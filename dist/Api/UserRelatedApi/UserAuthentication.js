@@ -121,6 +121,70 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).send({ error: 'Authentication failed' });
     }
 }));
+// router.post('/authenticate', async (req, res) => {
+//     const { User, Secret } = req.body;
+//     // Validate input structure
+//     if (!User || !Secret || !User.name || !Secret.password) {
+//         return res.status(400).send({ error: 'Invalid request format.' });
+//     }
+//     const { name: username, isAdmin } = User;
+//     const { password } = Secret;
+//     if (!validation.isValidInput(username) || !validation.isValidInput(password)) {
+//         return res.status(400).send("Invalid input detected. Please avoid using special characters.");
+//     }
+//     try {
+//         const client = await pool.connect();
+//         const result = await client.query(DB_UTIL.SELECT_USER_INFO, [username]);
+//         client.release();
+//         if (result.rows.length === 0) {
+//             return res.status(401).send({ error: 'Invalid username or password' });
+//         }
+//         const user = result.rows[0];
+//         const matchPassword = await validation.verifyPassword(password, user.password_hash);
+//         if (!matchPassword) {
+//             return res.status(401).send({ error: 'Invalid username or password' });
+//         }
+//         res.status(200).send({ message: 'Authentication successful' });
+//     } catch (error) {
+//         console.error('Error during authentication:', error);
+//         res.status(500).send({ error: 'Authentication failed' });
+//     }
+// });
+router.post('/authenticate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { User, Secret } = req.body;
+    // Validate input structure
+    if (!User || !Secret || !User.name || !Secret.password) {
+        return res.status(400).send({ error: 'Invalid request format.' });
+    }
+    const { name: username, isAdmin } = User;
+    const { password } = Secret;
+    if (!validation.isValidInput(username) || !validation.isValidInput(password)) {
+        return res.status(400).send("Invalid input detected. Please avoid using special characters.");
+    }
+    try {
+        const client = yield dbConnection_1.pool.connect();
+        const result = yield client.query(DB_UTIL.SELECT_USER_INFO, [username]);
+        client.release();
+        if (result.rows.length === 0) {
+            return res.status(401).send({ error: 'Invalid username or password' });
+        }
+        const user = result.rows[0];
+        const matchPassword = yield validation.verifyPassword(password, user.password_hash);
+        if (!matchPassword) {
+            return res.status(401).send({ error: 'Invalid username or password' });
+        }
+        const mockToken = "mock_bearer_token_1234567890"; // Static mock token
+        res.status(200).send({
+            tokenType: 'bearer',
+            accessToken: mockToken,
+            message: 'Authentication successful',
+        });
+    }
+    catch (error) {
+        console.error('Error during authentication:', error);
+        res.status(500).send({ error: 'Authentication failed' });
+    }
+}));
 router.delete('/delete/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const userId = req.params.id;

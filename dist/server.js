@@ -27,7 +27,7 @@ const port = process.env.PORT || 3000; // Use Elastic Beanstalk's PORT or fallba
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 // Include user authentication routes
-app.use('/api', UserAuthentication_1.default);
+app.use('/', UserAuthentication_1.default);
 app.use('/upload', uploadPackage_1.default); // Upload package routes
 app.use('/delete', deletePackage_1.default); // Delete package routes
 app.use('/update', updatePackage_1.default); // Update package routes

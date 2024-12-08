@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Include user authentication routes
-app.use('/api', userAuthRoutes);
+app.use('/', userAuthRoutes);
 
 app.use('/upload', uploadPackageRoutes);  // Upload package routes
 app.use('/delete', deletePackageRoutes);  // Delete package routes
