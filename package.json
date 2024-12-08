@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/Server/server.js",
+    "start": "node dist/server.js",
     "generate-schema": "ts-node src/generateSchema.ts",
     "test": "jest --reporters=default --reporters=./test-reporter.js --coverage"
   },
