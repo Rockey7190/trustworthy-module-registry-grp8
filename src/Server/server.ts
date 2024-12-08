@@ -19,7 +19,7 @@ import tracks from '../Api/PackageApis/tracks'
 
 
 const app = express();
-const port = process.env.PORT || 3000; // Use Elastic Beanstalk's PORT or fallback to 3000
+const port = 3000; // Use Elastic Beanstalk's PORT or fallback to 3000
 
 // Middleware for parsing JSON and form data
 app.use(bodyParser.json());
