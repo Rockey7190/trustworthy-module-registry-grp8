@@ -13,7 +13,7 @@ import sizeCost from '../Api/PackageApis/sizeCost';
 import fullReset from '../Api/PackageApis/fullReset';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 8080;
 
 // Middleware for parsing JSON and form data
 app.use(bodyParser.json());
@@ -43,6 +43,17 @@ app.use('/api', searchPackages); // Search packages
 app.use('/api', sizeCost); // Check size cost
 
 app.use('/api', fullReset);
+
+app.get('/api/health', (req, res) => {
+    res.status(200).send({ status: 'OK' });
+});
+
+
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error(err.stack);
+    res.status(500).send({ error: 'Something went wrong!' });
+});
+
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
