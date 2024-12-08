@@ -1,13 +1,24 @@
 {
-  "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
-    "typeRoots": ["node_modules/@types", "src/types"]
-  },
-  "include": ["src/**/*.ts", "src/Test/**/*.ts"],
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "target": "ES6", // Target modern JavaScript
+        "module": "commonjs", // Module system for Node.js
+        "rootDir": "./src", // Unified root directory of TypeScript source files
+        "outDir": "./output", // Unified output directory for compiled files
+        "strict": true, // Enable strict type-checking
+        "esModuleInterop": true, // Enable compatibility with ES6 modules
+        "skipLibCheck": true, // Skip type-checking for node_modules
+        "forceConsistentCasingInFileNames": true, // Enforce consistent casing
+        "typeRoots": [ "node_modules/@types", "src/types" ] // Custom type roots
+    },
+    "include": [
+        "src/**/*", // Include all TypeScript files in `src` folder
+        "src/**/*.ts", // Explicitly include .ts files
+        "src/Test/**/*.ts" // Include test files
+    ],
+    "exclude": [
+        "node_modules", // Exclude unnecessary files
+        "output", // Exclude output directory
+        "Server/output" // Exclude alternate output directories
+        ".vs" //Exclude the Visual Studio directory
+    ]
 }

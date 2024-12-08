@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+@import url('https://fonts.googleapis.com/css?family=Oswald');
+
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #2e0f38;
+}
+
+.parallax {
+    background-image: url("bkg_image.jpg");
+    height: 100%;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+h1 {
+    font-family: 'Raleway';
+    color: floralwhite;
+    text-align: center;
+    font-size: 100px;
+    margin: 0px;
+    padding: 150px;
+    letter-spacing: 3px;
+}
+
+.btn {
+    border-radius: 30px;
+    font-family: 'Raleway',sans-serif;
+    color: #FF10F0;
+    font-size: 350%;
+    padding: 3px 10px;
+    border: solid #FF10F0 5px;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+    .btn:hover {
+        color: #FFF;
+        border: solid #FFF 3px;
+    }
+
+.heading {
+    color: #FFF;
+    font-size: 45px;
+    font-family: 'Raleway';
+    text-align: center;
+    text-decoration: overline;
+    text-decoration: underline;
+}
+
+.login_box {
+    background-color: #1a2c54;
+    padding: 150px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 700px;
+    height: 350px;
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+.login_box button {
+    width: 100%;
+    padding: 10px;
+    background-color: #FF10F0;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.login_box input[type="text"],
+.login_box input[type="password"] {
+    width: 70%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: red;
+}
+
+.content_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.site_description {
+    width: 45%;
+    color: white;
+    padding: 120px;
+    background-color: #3b2f5a; /* Purple background for description area */
+    border-radius: 10px;
+    text-align: left;
+    font-family:'Raleway';
+    font-size: 30px;
+    line-height:25pt;
+}
+
+.site_description h2 {
+    text-align:center;
+    text-decoration:underline;
+}
+
+.login_box button:hover {
+    background-color: white;
+}
+
+.parallax h1 {
+    margin-bottom: 150px; 
+}
+
+.parallax .btn {
+    margin-top: 100px; 
+}
