@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import userAuthRoutes from './Api/UserRelatedApi/UserAuthentication'
 import uploadPackageRoutes from './Api/PackageApis/uploadPackage';
@@ -19,9 +20,15 @@ import tracks from './Api/PackageApis/tracks'
 
 
 const app = express();
-const port = process.env.PORT || 3000; // Use Elastic Beanstalk's PORT or fallback to 3000
+const port = process.env.PORT || 3000; 
 
-// Middleware for parsing JSON and form data
+const corsOptions = {
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+    allowedHeaders: ['Content-Type', 'Authorization'], 
+  };
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

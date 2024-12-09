@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const UserAuthentication_1 = __importDefault(require("./Api/UserRelatedApi/UserAuthentication"));
 const uploadPackage_1 = __importDefault(require("./Api/PackageApis/uploadPackage"));
@@ -22,8 +23,13 @@ const byRegEx_1 = __importDefault(require("./Api/PackageApis/byRegEx"));
 const packageRate_1 = __importDefault(require("./Api/PackageApis/packageRate"));
 const tracks_1 = __importDefault(require("./Api/PackageApis/tracks"));
 const app = (0, express_1.default)();
-const port = process.env.PORT || 3000; // Use Elastic Beanstalk's PORT or fallback to 3000
-// Middleware for parsing JSON and form data
+const port = process.env.PORT || 3000;
+const corsOptions = {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use((0, cors_1.default)(corsOptions));
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 // Include user authentication routes
