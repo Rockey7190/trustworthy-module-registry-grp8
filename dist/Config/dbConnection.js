@@ -8,11 +8,14 @@ const pg_1 = require("pg");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 exports.pool = new pg_1.Pool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: Number(process.env.DB_PORT) || 5432
+    user: "asmedb",
+    host: "asme-db.cn2o0ao8aj7i.us-east-2.rds.amazonaws.com",
+    database: "asme_intial",
+    password: "asmedbdb",
+    port: 5432,
+    ssl: {
+        rejectUnauthorized: false
+    },
 });
 exports.pool.on('connect', () => {
     console.log('Database connected successfully');
