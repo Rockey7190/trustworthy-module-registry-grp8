@@ -15,57 +15,34 @@ const s3Client = new S3Client({
     },
 });
 
-// GET /package/:id
+// GET /package/{id}
 router.get('/:id', async (req: Request, res: Response) => {
     const packageId = parseInt(req.params.id, 10);
 
+    // Validate the package ID
     if (isNaN(packageId)) {
         return res.status(400).send({ message: 'Invalid package ID.' });
     }
 
     try {
+        // Query to fetch the package by ID
         const query = `
-            SELECT p.package_name, v.version, v.s3_url
-            FROM package_versions v
-            INNER JOIN packages p ON v.package_id = p.package_id
-            WHERE v.version_id = $1;
+            SELECT p.package_name AS Name, v.version AS Version, p.package_id AS ID
+            FROM packages p
+            INNER JOIN package_versions v ON p.package_id = v.package_id
+            WHERE p.package_id = $1;
         `;
         const result = await pool.query(query, [packageId]);
 
+        // If no package is found, return 404
         if (result.rows.length === 0) {
             return res.status(404).send({ message: 'Package not found.' });
         }
 
-        const { package_name: name, version, s3_url: s3Url } = result.rows[0];
-        const bucketName = process.env.AWS_BUCKET_NAME!;
-        const key = s3Url.replace(`https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/`, '');
-
-        // Retrieve the package content from S3
-        const command = new GetObjectCommand({ Bucket: bucketName, Key: key });
-        const s3Response = await s3Client.send(command);
-
-        if (!s3Response.Body) {
-            return res.status(500).send({ message: 'Failed to retrieve package content from S3.' });
-        }
-
-        const chunks: Uint8Array[] = [];
-        for await (const chunk of s3Response.Body as AsyncIterable<Uint8Array>) {
-            chunks.push(chunk);
-        }
-        const contentBase64 = Buffer.concat(chunks).toString('base64');
-
-        res.status(200).send({
-            metadata: {
-                Name: name,
-                Version: version,
-                ID: packageId,
-            },
-            data: {
-                Content: contentBase64,
-            },
-        });
+        // Return the first matching result
+        res.status(200).send(result.rows[0]);
     } catch (error: any) {
-        console.error('Error retrieving package:', error.message || error);
+        console.error('Error fetching package by ID:', error.message || error);
         res.status(500).send({ message: 'Failed to retrieve package.', error: error.message || 'Unknown error' });
     }
 });
