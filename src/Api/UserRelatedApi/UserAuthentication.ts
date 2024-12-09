@@ -93,6 +93,49 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.post('/authenticate', async (req, res) => {
+    const { User, Secret } = req.body;
+
+    if (!User || !Secret || !User.name || !Secret.password) {
+        return res.status(400).send({ error: 'Invalid request format.' });
+    }
+
+    const { name: username, isAdmin } = User;
+    const { password } = Secret;
+
+    if (!validation.isValidInput(username) || !validation.isValidInput(password)) {
+        return res.status(400).send("Invalid input detected. Please avoid using special characters.");
+    }
+
+    try {
+        const client = await pool.connect();
+        const result = await client.query(DB_UTIL.SELECT_USER_INFO, [username]);
+        client.release();
+
+        if (result.rows.length === 0) {
+            return res.status(401).send({ error: 'Invalid username or password' });
+        }
+
+        const user = result.rows[0];
+        const matchPassword = await validation.verifyPassword(password, user.password_hash);
+
+        if (!matchPassword) {
+            return res.status(401).send({ error: 'Invalid username or password' });
+        }
+
+        const mockToken = "rhfr^&fjh&efek5575!$!7384wrb"; 
+        res.status(200).send({
+            tokenType: 'bearer',
+            accessToken: mockToken,
+            message: 'Authentication successful',
+        });
+    } catch (error) {
+        console.error('Error during authentication:', error);
+        res.status(500).send({ error: 'Authentication failed' });
+    }
+});
+
+
 router.delete('/delete/:id', async (req, res) => {
     const userId = req.params.id;
     let client: PoolClient | undefined;

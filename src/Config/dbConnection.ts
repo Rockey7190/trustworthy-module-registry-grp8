@@ -10,7 +10,7 @@ export const pool = new Pool({
     password: "asmedbdb",
     port: 5432,
     ssl: {
-        rejectUnauthorized: false // This bypasses SSL certificate verification for local dev
+        rejectUnauthorized: false 
     },
 });
 

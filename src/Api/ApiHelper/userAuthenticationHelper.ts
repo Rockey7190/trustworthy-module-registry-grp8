@@ -1,6 +1,6 @@
 import { CHECK_DUPLICATE_QUERY } from "../../Util/dbUtil";
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const validator = require("validator")
 
 export async function hashPassword(plainPassword: any) {
