@@ -1,30 +1,36 @@
 import { Router, Request, Response } from 'express';
+import { getMetrics } from '../../Server/metricsController'; // Adjust path to the actual service
 
 const router = Router();
 
-// GET /package/:id/rate
-router.get('/:id/rate', (req: Request, res: Response) => {
+router.get('/:id/rate', async (req: Request, res: Response) => {
     const packageId = parseInt(req.params.id, 10);
 
-    // Validate the package ID
     if (isNaN(packageId)) {
         return res.status(400).send({ message: 'Invalid Package ID.' });
     }
 
-    // Placeholder for authentication check
-    //const authToken = req.headers['x-authorization'];
-    //if (!authToken) {
-    //    return res.status(403).send({ message: 'Missing or invalid authentication token.' });
-    //}
+    try {
+        const metrics = await getMetrics(req, res);
 
-    // Placeholder response for a successful rating retrieval
-    res.status(200).send({
-        rating: {
-            quality: 4.5,
-            popularity: 3.8,
-            maintenance: 4.2,
-        },
-    });
+        // Directly use metrics in the response
+        res.status(200).json({
+            rating: metrics,
+        });
+    } catch (error: any) {
+        console.error('Error fetching package rating:', error);
+
+        if (error.message.includes('not found')) {
+            return res.status(404).json({ message: 'Package does not exist.' });
+        }
+
+        if (error.message.includes('metrics')) {
+            return res.status(500).json({ message: 'The package rating system choked on at least one of the metrics.' });
+        }
+
+        // Generic fallback for unexpected errors
+        return res.status(500).json({ message: 'An unexpected error occurred.' });
+    }
 });
 
 export default router;
