@@ -1,7 +1,5 @@
 # README
 
-## How to Start
-
 Overview
 The Package Management System is a backend service that provides a robust REST API for managing software packages. It supports functionality for uploading, updating, downloading, searching, and deleting packages, as well as advanced features like cost analysis and registry reset. The system is built with Node.js, Express, and leverages AWS services such as S3 for cloud storage of package files, beanstalk for API server, and database.
 
