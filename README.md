@@ -12,39 +12,39 @@ http://dev-new-env.us-east-2.elasticbeanstalk.com
 
 **Feature**                                **Relevant Endpoint(s)**                           **Verb(s) | Payload option(s)** 
 
-Upload Packages                             /package                                           POST | Valid input with Content (base64) or URL, and Name 
+Upload Packages:                             /package                                           POST | Valid input with Content (base64) or URL, and Name 
 
-Fetching Packages                           /packages                                          POST | Valid array of queries (Name, Version, or "*") 
+Fetching Packages:                           /packages                                          POST | Valid array of queries (Name, Version, or "*") 
 
-Deleting Package Versions                   /delete                                            DELETE | Valid input with packageName, version 
+Deleting Package Versions:                   /delete                                            DELETE | Valid input with packageName, version 
 
-Fetching Available Versions                 /versions                                          GET | Valid input with packageName, optional versionRange 
+Fetching Available Versions:                 /versions                                          GET | Valid input with packageName, optional versionRange 
 
-Fetching Package Directory                  /package/{id}                                      GET | Path parameter id 
+Fetching Package Directory:                  /package/{id}                                      GET | Path parameter id 
 
-Updating Package                            /package/{id}                                      POST | Valid Content (base64), Version, and id 
+Updating Package:                            /package/{id}                                      POST | Valid Content (base64), Version, and id 
 
-Getting Package Cost                        /package/{id}/cost                                 GET | Path parameter id, query dependency=true/false 
+Getting Package Cost:                        /package/{id}/cost                                 GET | Path parameter id, query dependency=true/false 
 
-Getting Ratings                             /package/{id}/rate                                 POST | No input 
+Getting Ratings:                             /package/{id}/rate                                 POST | No input 
 
-Downloading Packages                        /download                                          GET | Valid input with packageName, optional version 
+Downloading Packages:                        /download                                          GET | Valid input with packageName, optional version 
 
-Fetching Tracks                             /tracks                                            GET | No payload required 
+Fetching Tracks:                             /tracks                                            GET | No payload required 
 
-Searching by RegEx                          /package/byRegEx                                   POST | Payload with RegEx 
+Searching by RegEx:                          /package/byRegEx                                   POST | Payload with RegEx 
 
-Full Reset                                  /reset                                             DELETE | No input 
+Full Reset:                                  /reset                                             DELETE | No input 
 
-authenticate                                /authenticate                                      POST | username and password 
+authenticate:                                /authenticate                                      POST | username and password 
 
-delete                                      /delete/:id                                        DELETE | takes user_id 
+delete:                                      /delete/:id                                        DELETE | takes user_id 
 
-Fetch users                                 /users                                             GET | No input 
+Fetch users:                                 /users                                             GET | No input 
 
-Fetch user                                  /user/:id                                          GET | takes id 
+Fetch user:                                  /user/:id                                          GET | takes id 
 
-register                                    /register                                          POST | payload 
+register:                                    /register                                          POST | payload 
 
 
 **Testing**
