@@ -2,68 +2,52 @@
 
 ## How to Start
 
-1. **Clone the Repository:**
+Overview
+The Package Management System is a backend service that provides a robust REST API for managing software packages. It supports functionality for uploading, updating, downloading, searching, and deleting packages, as well as advanced features like cost analysis and registry reset. The system is built with Node.js, Express, and leverages AWS services such as S3 for cloud storage of package files, beanstalk for API server, and database.
 
-   ```bash
-   git clone https://github.com/SWE-Group6/phase1.git
-   ```
+**Front End Website link:**
+https://rockey7190.github.io/trustworthy-module-registry-grp8/
+**Server link for endpoint access:**
+http://dev-new-env.us-east-2.elasticbeanstalk.com
 
-2. **Copy the `.env` file from `.env.sample`:**
+**Valid Endpoints**
 
-   ```bash
-   cp .env.sample .env
-   ```
+**Feature**                                **Relevant Endpoint(s)**                           **Verb(s) | Payload option(s)** 
 
-   - Add your `GITHUB_TOKEN` and `OPENAI_API_KEY` in the `.env` file.
+Upload Packages                             /package                                           POST | Valid input with Content (base64) or URL, and Name 
 
-3. **Install Packages:**
+Fetching Packages                           /packages                                          POST | Valid array of queries (Name, Version, or "*") 
 
-   ```bash
-   ./run install
-   ```
+Deleting Package Versions                   /delete                                            DELETE | Valid input with packageName, version 
 
-4. **Run Test Scripts:**
+Fetching Available Versions                 /versions                                          GET | Valid input with packageName, optional versionRange 
 
-   ```bash
-   ./run test
-   ```
+Fetching Package Directory                  /package/{id}                                      GET | Path parameter id 
 
-5. **Run a Text File Containing Node Packages:**
+Updating Package                            /package/{id}                                      POST | Valid Content (base64), Version, and id 
 
-   ```bash
-   ./run <TXT_FILE_URL>
-   ```
+Getting Package Cost                        /package/{id}/cost                                 GET | Path parameter id, query dependency=true/false 
 
-## How to Run the Express REST API Server
+Getting Ratings                             /package/{id}/rate                                 POST | No input 
 
-1. **Start the Express Server:**
+Downloading Packages                        /download                                          GET | Valid input with packageName, optional version 
 
-   ```bash
-   npm run start
-   ```
+Fetching Tracks                             /tracks                                            GET | No payload required 
 
-2. **Simulate a Call to the API:**
+Searching by RegEx                          /package/byRegEx                                   POST | Payload with RegEx 
 
-   In another terminal, use `curl` to simulate an API call:
+Full Reset                                  /reset                                             DELETE | No input 
 
-   ```bash
-   curl "http://localhost:3000/api/metrics?url=https://github.com/cloudinary/cloudinary_npm"
-   ```
+authenticate                                /authenticate                                      POST | username and password 
 
-## How to Run the Syntax Checker
+delete                                      /delete/:id                                        DELETE | takes user_id 
 
-1. **Clone the Syntax Checker Repository:**
+Fetch users                                 /users                                             GET | No input 
 
-   ```bash
-   git clone https://github.com/PurdueDualityLab/ECE461-Part-1-CLI-Checker.git
-   ```
+Fetch user                                  /user/:id                                          GET | takes id 
 
-2. **Update the `constants.py` File:**
+register                                    /register                                          POST | payload 
 
-   Add the necessary constants in the `constants.py` file.
 
-3. **Run the Syntax Checker:**
-
-   ```bash
-   python checker.py
-   ```
+**Testing**
+To test endpoints use curl commands or a tool like postman
